@@ -1,0 +1,2 @@
+git+https://github.com/pniedzwiedzinski/pseudo.git@release/0.8.2
+Click==7.0

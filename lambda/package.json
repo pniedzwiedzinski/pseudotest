@@ -1,0 +1,23 @@
+{
+  "name": "pseudotest-worker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "author": "Patryk Niedźwiedziński",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pniedzwiedzinski/pseudotest-worker.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pniedzwiedzinski/pseudotest-worker/issues"
+  },
+  "homepage": "https://github.com/pniedzwiedzinski/pseudotest-worker#readme",
+  "dependencies": {
+    "serverless-python-requirements": "^4.3.0"
+  }
+}
