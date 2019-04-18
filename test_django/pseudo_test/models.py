@@ -1,3 +1,7 @@
 from django.db import models
 
-# Create your models here.
+class Scores(models.Model):
+    score_id = models.IntegerField()
+    score_date = models.DateTimeField()
+    score = models.IntegerField()
+    
