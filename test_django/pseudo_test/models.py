@@ -18,7 +18,7 @@ class Test(models.Model):
     task_id = models.ForeignKey(Task, on_delete=models.CASCADE)
 
     def __str__(self):
-        return str([self.id, self.name, self.task_id])
+        return str([self.id, self.test_in, self.test_out, self.task_id])
 
 
 class Score(models.Model):
