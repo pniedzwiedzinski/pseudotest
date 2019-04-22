@@ -1,12 +1,3 @@
-Requirements:
-
-Modules:
-    django 2.2
-    
-Mysql: MariaDB Database, and account
-    Assign Credentials to these Enviroment Variables
-    DB_USER - username of mysql database
-    DB_PASSWORD - password
-    DB_NAME - name of database
-    DB_PORT - port of database
-    DB_HOST - host of database
+django==2.2
+hashlib
+mysqlclient
