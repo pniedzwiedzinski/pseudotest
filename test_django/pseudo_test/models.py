@@ -13,9 +13,9 @@ class Task(models.Model):
 
 class Test(models.Model):
     id = models.IntegerField(primary_key=True)
-    name = models.TextField()
+    test_in = models.TextField(default="[]")
+    test_out = models.TextField(default="[]")
     task_id = models.ForeignKey(Task, on_delete=models.CASCADE)
-    content = models.TextField()
 
     def __str__(self):
         return str([self.id, self.name, self.task_id])
