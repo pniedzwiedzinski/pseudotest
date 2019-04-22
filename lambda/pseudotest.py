@@ -2,7 +2,7 @@ from pseudo import compile
 from testing import Testing
 
 
-def test(exercise, pseudocode):
+def test(exercise, pseudocode, logger):
 
     # TODO: Get tests from RDS
     rds = {"a": [{"in": [1, 2], "out": [3]},
@@ -13,10 +13,11 @@ def test(exercise, pseudocode):
 
     results = []
 
-    for t in tests:
+    for i, t in enumerate(tests):
         r = Testing(t["in"], t["out"])
 
         try:
+            logger.info("Run test#"+str(i))
             r.run(instructions)
             if len(r.test_in) > 0 or len(r.test_out):
                 raise AssertionError

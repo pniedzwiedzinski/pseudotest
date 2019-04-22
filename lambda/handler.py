@@ -31,11 +31,16 @@ def lambda_handler(event, context):
         logger.error('Invalid name: {}'.format(KEY))
         raise
 
+    KEY = f"{exercise}@{task_id}"
+
     try:
         logger.info("Starting file download")
-        response = s3.get_object(Bucket=BUCKET, Key=f"{exercise}@{task_id}")
+        response = s3.get_object(Bucket=BUCKET, Key=KEY)
         pseudocode = response['Body'].read().decode('utf-8')
         logger.info("File dowload finished")
+        logger.info("Removing object frow queue")
+        s3.delete_object(Bucket=BUCKET, Key=KEY)
+        logger.info(f"Object {KEY} removed")
     except ClientError as e:
         if e.response['Error']['Code'] == "404":
             logger.error(f"The object {KEY} does not exist.")
@@ -44,7 +49,7 @@ def lambda_handler(event, context):
         raise
 
     logger.info("Running test...")
-    results = test(exercise, pseudocode)
+    results = test(exercise, pseudocode, logger)
 
     logger.info(results)
 
