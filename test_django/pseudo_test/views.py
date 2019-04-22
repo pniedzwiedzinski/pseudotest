@@ -20,15 +20,14 @@ def send_answer(request):
         else:
             return {'result':'error','message':'wrong file format or size'}
 
-    context = {'task_list':get_all_tasks}
+    context = {'task_list':get_all_tasks()}
     return render(request, 'pseudo_test/send_answer.html', context)
-
 
 
 def get_file_id():
     for i in range(100):
         can = 1
-        file_id = hashlib.md5(os.urandom(32)).hexdigest()
+        file_id = hashlib.md5(os.urandom(32)).hexdigest()[:8]
         if file_id in get_all_file_ids():
             continue
         return file_id
