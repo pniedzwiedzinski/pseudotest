@@ -17,6 +17,10 @@ var/
 *.egg
 .vscode
 
+crash
+__pycache__
+*.pdc
+
 # Serverless directories
 .serverless
 .requirements
