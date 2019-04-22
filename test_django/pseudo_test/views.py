@@ -4,7 +4,7 @@ from .models import Task
 import boto3   
 from test_django.settings import S3_NAME
 import random
-from .api.dbhandlers import get_all_tasks
+from .api.dbhandlers import get_all_tasks, get_all_file_ids
 s3 = boto3.resource('s3')
 
 def send_answer(request):
@@ -21,14 +21,10 @@ def send_answer(request):
 
 
 
-
 def get_file_id():
     for i in range(100):
         can = 1
         file_id = random.randint(10000,99999)
-        object_list = []
-        for objects in s3.Bucket(S3_NAME).objects.all():
-            object_list.append(objects.key[-5:])
-        if file_id in object_list:
+        if file_id in get_all_file_ids():
             continue
         return file_id

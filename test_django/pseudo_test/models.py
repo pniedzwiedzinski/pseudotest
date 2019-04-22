@@ -20,8 +20,8 @@ class Task(models.Model):
 
 
 class Score(models.Model):
-    #scores of tested pseudocodes that are deleted if too old
-    id = models.IntegerField(primary_key=True)
+    #scores of tested files that are deleted if too old
+    file_id = models.IntegerField(primary_key=True)
     score_date = models.DateTimeField()
     task_id = models.ForeignKey(Task, on_delete=models.CASCADE)
     score = models.IntegerField()
