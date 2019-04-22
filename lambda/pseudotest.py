@@ -2,9 +2,7 @@ from pseudo import compile
 from testing import Testing
 
 
-def test(exercise):
-    with open("test.pdc") as fp:
-        pseudocode = fp.read()
+def test(exercise, pseudocode):
 
     # TODO: Get tests from RDS
     rds = {"a": [{"in": [1, 2], "out": [3]},

@@ -11,7 +11,7 @@ provider:
   name: aws
   runtime: python3.7
   versionFunctions: false
-  memorySize: 128
+  memorySize: 256
   region: eu-central-1
 
 # you can define service wide environment variables here
