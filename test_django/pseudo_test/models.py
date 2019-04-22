@@ -1,22 +1,23 @@
 from django.db import models
 
 
-class Test(models.Model):
-    id = models.IntegerField(primary_key=True)
-    name = models.TextField()
-
-    def __str__(self):
-        return str([self.id, self.name])
-
-
 class Task(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.TextField()
-    test_id = models.ForeignKey(Test,on_delete=models.CASCADE)
     description = models.TextField()
 
     def __str__(self):
-        return str([self.id, self.name, self.test_id, self.description])
+        return str([self.id, self.name, self.description])
+
+
+
+class Test(models.Model):
+    id = models.IntegerField(primary_key=True)
+    name = models.TextField()
+    task_id = models.ForeignKey(Task, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str([self.id, self.name, self.task_id])
 
 
 class Score(models.Model):
@@ -27,6 +28,6 @@ class Score(models.Model):
     score = models.IntegerField()
 
     def __str__(self):
-        return str([self.id, self.score, self.score_date])
+        return str([self.file_id, self.score, self.score_date, self.task_id])
 
     
