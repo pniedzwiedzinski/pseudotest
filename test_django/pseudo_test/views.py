@@ -27,7 +27,7 @@ def send_answer(request):
 def get_file_id():
     for i in range(100):
         can = 1
-        file_id = hashlib.md5(os.urandom(32)).hexdigest()[:8]
-        if file_id in get_all_file_ids():
+        new_file_id = hashlib.md5(os.urandom(32)).hexdigest()[:8]
+        if Score.objects.filter(file_id=new_file_id):
             continue
-        return file_id
+        return new_file_id
