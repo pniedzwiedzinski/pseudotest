@@ -1,0 +1,7 @@
+engines:
+  pep8:
+    enabled: true
+
+    checks:
+      W391:
+        enabled: false
