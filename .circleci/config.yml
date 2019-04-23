@@ -4,10 +4,6 @@ jobs:
     docker:
       # specify the version you desire here
       # use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
-      - image: mariadb:10.3
-        environment:
-          MYSQL_ROOT_PASSWORD: testing
-          MYSQL_DATABASE: pseudotest
       - image: circleci/python:3.6.1
         environment:
           S3_BUCKET: none
@@ -16,6 +12,10 @@ jobs:
           DB_PASSWORD: testing
           DB_HOST: 127.0.0.1
           DB_PORT: 3306
+      - image: mysql:10.3
+        environment:
+          MYSQL_ROOT_PASSWORD: testing
+          MYSQL_DATABASE: pseudotest
 
     working_directory: ~/repo/test_django
 
@@ -69,7 +69,7 @@ jobs:
           command: |
             python3 -m venv venv
             . venv/bin/activate
-            pip install requirements.txt
+            pip install -r requirements.txt
 
       - run:
           name: Install npm serverless
