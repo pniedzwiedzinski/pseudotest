@@ -25,7 +25,7 @@ SECRET_KEY = 'rw21k2u=j*a(xx+n&l2f64i#npvah0cs2rz!+$hp)y02b)htbf'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['0.0.0.0','127.0.0.1']
 
 
 # Application definition
@@ -123,4 +123,4 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-S3_NAME = "pseudocodetester"
+S3_NAME = os.environ['S3_BUCKET']
