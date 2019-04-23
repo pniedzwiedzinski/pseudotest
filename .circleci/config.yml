@@ -1,0 +1,82 @@
+version: 2
+jobs:
+  test_django:
+    docker:
+      # specify the version you desire here
+      # use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
+      - image: mariadb:10.3
+        environment:
+          MYSQL_ROOT_PASSWORD: testing
+          MYSQL_DATABASE: pseudotest
+      - image: circleci/python:3.6.1
+        environment:
+          S3_BUCKET: none
+          DB_NAME: pseudotest
+          DB_USER: root
+          DB_PASSWORD: testing
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+
+    working_directory: ~/repo/test_django
+
+    steps:
+      - checkout:
+        path: ~/repo
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - django-dependencies-{{ checksum "requirements.txt" }}
+            # fallback to using the latest cache if no exact match is found
+            - django-dependencies-
+
+      - run:
+          name: install dependencies
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -r requirements.txt
+
+      - save_cache:
+          paths:
+            - ./venv
+          key: django-dependencies-{{ checksum "requirements.txt" }}
+
+      - run:
+          name: run tests
+          command: |
+            . venv/bin/activate
+            python manage.py test
+
+  test_lambda:
+    docker:
+      - image: nikolaik/python-nodejs:python3.7-nodejs11
+
+    working_directory: ~/repo/lambda
+
+    steps:
+      - checkout:
+        path: ~/repo
+
+      - restore_cache:
+          keys:
+            - lambda-dependencies-{{ checksum "requirements.txt" }}-{{ checksum "package-lock.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - lambda-dependencies-
+
+      - run:
+          name: Install python dependencies
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install requirements.txt
+
+      - run:
+          name: Install npm serverless
+          command: npm ci
+
+      - save_cache:
+          key: lambda-dependencies-{{ checksum "requirements.txt" }}-{{ checksum "package-lock.json" }}
+          paths:
+            - ./node_modules
+            - ./venv
