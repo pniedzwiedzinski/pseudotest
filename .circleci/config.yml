@@ -12,7 +12,7 @@ jobs:
           DB_PASSWORD: testing
           DB_HOST: 127.0.0.1
           DB_PORT: 3306
-      - image: mysql:10.3
+      - image: mariadb:10.3
         environment:
           MYSQL_ROOT_PASSWORD: testing
           MYSQL_DATABASE: pseudotest
