@@ -3,5 +3,7 @@ engines:
     enabled: true
 
     checks:
+      E501:
+        enabled: false
       W391:
         enabled: false
