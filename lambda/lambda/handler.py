@@ -6,7 +6,7 @@ import pseudo
 import boto3
 from botocore.exceptions import ClientError
 
-from pseudotest import test
+from pseudotest import run_tests
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -49,7 +49,7 @@ def lambda_handler(event, context):
 
     logger.info("Got pseudocode:\n" + pseudocode)
     logger.info("Running test...")
-    results = test(exercise, pseudocode, logger)
+    results = run_tests(exercise, pseudocode, logger)
 
     logger.info(results)
 
