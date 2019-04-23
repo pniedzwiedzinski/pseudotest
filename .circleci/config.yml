@@ -80,3 +80,11 @@ jobs:
           paths:
             - ./node_modules
             - ./venv
+
+workflows:
+  version: 2
+
+  test_workflow:
+    jobs:
+      - test_django
+      - test_lambda
