@@ -10,7 +10,7 @@ from test_django.settings import S3_NAME
 from .api.dbhandlers import get_all_file_ids, get_all_tasks
 from .models import Task, Score
 
-s3 = boto3.resource("s3")
+s3 = boto3.client("s3")
 
 
 def send_answer(request):
@@ -20,8 +20,10 @@ def send_answer(request):
             uploaded_file.name[-4:] == ".txt" or uploaded_file.name[-4:] == ".pdc"
         ) and uploaded_file.size < 1000000:
             file_id = get_file_id()
-            s3.Bucket(S3_NAME).put_object(
-                Key="{0}@{1}".format(request.POST["task"], file_id), Body=uploaded_file
+            s3.put_object(
+                Bucket=S3_NAME,
+                Key="{0}@{1}".format(request.POST["task"]["name"], file_id),
+                Body=uploaded_file.read(),
             )
             return {"result": "success", "message": file_id}
         else:
