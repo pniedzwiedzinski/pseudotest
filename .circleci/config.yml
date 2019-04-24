@@ -1,4 +1,8 @@
 version: 2
+
+orbs: # specify all orbs you want to use.
+  aws-code-deploy: circleci/aws-code-deploy@1.0.0
+
 jobs:
   test_django:
     docker:
@@ -50,7 +54,7 @@ jobs:
 
   test_lambda:
     docker:
-      - image: nikolaik/python-nodejs:python3.7-nodejs11
+      - image: circleci/python:3.6.1
 
     working_directory: ~/repo/lambda
 
@@ -60,7 +64,7 @@ jobs:
 
       - restore_cache:
           keys:
-            - lambda-dependencies-{{ checksum "requirements.txt" }}-{{ checksum "package-lock.json" }}
+            - lambda-dependencies-{{ checksum "requirements.txt" }}
             # fallback to using the latest cache if no exact match is found
             - lambda-dependencies-
 
@@ -71,20 +75,53 @@ jobs:
             . venv/bin/activate
             pip install -r requirements.txt
 
-      - run:
-          name: Install npm serverless
-          command: npm ci
-
       - save_cache:
-          key: lambda-dependencies-{{ checksum "requirements.txt" }}-{{ checksum "package-lock.json" }}
+          key: lambda-dependencies-{{ checksum "requirements.txt" }}
           paths:
             - ./node_modules
             - ./venv
 
+  deploy_serverless:
+    docker:
+      - image: circleci/python:3.6.1
+
+    working_directory: ~/repo/lambda
+
+    steps:
+      - checkout:
+          path: ~/repo
+
+      - run:
+          name: Install npm serverless
+          command: npm ci
+
+      - run:
+          name: Deploy serverless
+          command: sls deploy --stage prod
+
 workflows:
   version: 2
 
-  test_workflow:
+  build_deploy:
     jobs:
       - test_django
       - test_lambda
+      - aws-code-deploy/deploy:
+          requires:
+            - test_django
+            - test_lambda
+          filters:
+            branches:
+              only: master
+          application-name: PseudoTest # The name of an AWS CodeDeploy application associated with the applicable IAM user or AWS account.
+          deployment-group: PseudoTest-DepGrp # The name of a new deployment group for the specified application.
+          service-role-arn: CodeDeployServiceRole # The service role for a deployment group.
+          bundle-bucket: pseudotest-ec2 # The s3 bucket where an application revision will be stored.
+          bundle-key: pseudotestDjangoApp # A key under the s3 bucket where an application revision will be stored.
+      - deploy_serverless:
+          requires:
+            - test_django
+            - test_lambda
+          filters:
+            branches:
+              only: master
