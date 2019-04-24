@@ -5,6 +5,9 @@ set -ueo pipefail
 
 cd /home/ubuntu/pseudotest/test_django
 
+cp django.nginxconf /etc/nginx/sites-available
+ln -s /etc/nginx/sites-available/django.nginxconf /etc/nginx/sites-enabled/django.nginxconf
+
 DATE=$(date +%H-%M-%S-%d-%m-%Y)
 
 if ! [[ -d /var/log/pseudotest ]]; then
@@ -12,4 +15,7 @@ if ! [[ -d /var/log/pseudotest ]]; then
 fi
 touch /var/log/pseudotest/${DATE}.log
 
-gunicorn --pid gunicorn.pid --workers=2 --access-logfile /var/log/pseudotest/${DATE}.log -D test_django.wsgi -b 0.0.0.0:80
+python3 manage.py collectstatic
+gunicorn --pid gunicorn.pid --workers=2 --access-logfile /var/log/pseudotest/${DATE}.log -D test_django.wsgi --bind=unix:gunicorn.sock
+
+service nginx restart
