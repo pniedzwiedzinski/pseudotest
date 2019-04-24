@@ -9,12 +9,12 @@ upstream pseudotest_server {
 server {
 
     listen   80;
-    server_name localhost;
+    server_name *.eu-central-1.compute.amazonaws.com;
 
     client_max_body_size 4G;
 
-    access_log /var/logs/pseudotest/nginx-access.log;
-    error_log /var/logs/pseudotest/nginx-error.log;
+    access_log /var/log/pseudotest/nginx-access.log;
+    error_log /var/log/pseudotest/nginx-error.log;
  
     location /static/ {
         alias   /home/ubuntu/pseudotest/test_django/static/;

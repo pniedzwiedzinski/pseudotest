@@ -6,7 +6,9 @@ set -ueo pipefail
 cd /home/ubuntu/pseudotest/test_django
 
 cp django.nginxconf /etc/nginx/sites-available
-ln -s /etc/nginx/sites-available/django.nginxconf /etc/nginx/sites-enabled/django.nginxconf
+if ! [[ -f /etc/nginx/sites-enabled/django.nginxconf ]]; then
+    ln -s /etc/nginx/sites-available/django.nginxconf /etc/nginx/sites-enabled/django.nginxconf
+fi
 
 DATE=$(date +%H-%M-%S-%d-%m-%Y)
 
