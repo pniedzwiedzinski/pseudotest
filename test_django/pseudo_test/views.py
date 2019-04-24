@@ -8,7 +8,7 @@ from django.shortcuts import render
 from test_django.settings import S3_NAME
 
 from .api.dbhandlers import get_all_file_ids, get_all_tasks
-from .models import Task
+from .models import Task, Score
 
 s3 = boto3.resource("s3")
 

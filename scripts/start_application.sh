@@ -7,7 +7,7 @@ cd /home/ubuntu/pseudotest/test_django
 
 DATE=$(date +%H-%M-%S-%d-%m-%Y)
 
-if ![[ -d /var/log/pseudotest ]]; then
+if ! [[ -d /var/log/pseudotest ]]; then
     mkdir /var/log/pseudotest
 fi
 touch /var/log/pseudotest/${DATE}.log
