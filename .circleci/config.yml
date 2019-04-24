@@ -1,8 +1,5 @@
 version: 2
 
-orbs: # specify all orbs you want to use.
-  aws-code-deploy: circleci/aws-code-deploy@1.0.0
-
 jobs:
   test_django:
     docker:
@@ -83,7 +80,7 @@ jobs:
 
   deploy_serverless:
     docker:
-      - image: circleci/python:3.6.1
+      - image: nikolaik/python-nodejs:python3.7-nodejs11
 
     working_directory: ~/repo/lambda
 
@@ -91,13 +88,57 @@ jobs:
       - checkout:
           path: ~/repo
 
+      - setup_remote_docker: # (2)
+          docker_layer_caching: true # (3)
+
+      - run:
+          name: Install Docker client
+          command: |
+            set -x
+            VER="17.03.0-ce"
+            curl -L -o /tmp/docker-$VER.tgz https://download.docker.com/linux/static/stable/x86_64/docker-$VER.tgz
+            tar -xz -C /tmp -f /tmp/docker-$VER.tgz
+            mv /tmp/docker/* /usr/bin
+
       - run:
           name: Install npm serverless
           command: npm ci
 
       - run:
+          name: Install dependencies
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -r requirements.txt
+
+      - run:
           name: Deploy serverless
           command: sls deploy --stage prod
+
+  deploy_django:
+    docker:
+      - image: nikolaik/python-nodejs:python3.7-nodejs11
+
+    working_directory: ~/repo/test_django
+
+    steps:
+      - checkout:
+          path: ~/repo
+
+      - run:
+          name: Install dependencies
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -r requirements.txt
+
+      - run:
+          name: Install code deploy
+          command: npm install aws-code-deploy -g
+
+      - run:
+          name: Deploy
+          command: aws-code-deploy
 
 workflows:
   version: 2
@@ -106,18 +147,13 @@ workflows:
     jobs:
       - test_django
       - test_lambda
-      - aws-code-deploy/deploy:
+      - deploy_django:
           requires:
             - test_django
             - test_lambda
           filters:
             branches:
               only: master
-          application-name: PseudoTest # The name of an AWS CodeDeploy application associated with the applicable IAM user or AWS account.
-          deployment-group: PseudoTest-DepGrp # The name of a new deployment group for the specified application.
-          service-role-arn: CodeDeployServiceRole # The service role for a deployment group.
-          bundle-bucket: pseudotest-ec2 # The s3 bucket where an application revision will be stored.
-          bundle-key: pseudotestDjangoApp # A key under the s3 bucket where an application revision will be stored.
       - deploy_serverless:
           requires:
             - test_django
