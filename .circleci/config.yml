@@ -13,7 +13,7 @@ jobs:
           DB_PASSWORD: testing
           DB_HOST: 127.0.0.1
           DB_PORT: 3306
-      - image: mariadb:10.3
+      - image: mariadb:10.1.34
         environment:
           MYSQL_ROOT_PASSWORD: testing
           MYSQL_DATABASE: pseudotest
@@ -118,19 +118,19 @@ jobs:
   deploy_django:
     docker:
       - image: nikolaik/python-nodejs:python3.7-nodejs11
+        environment:
+          AWS_CODE_DEPLOY_REGION: eu-central-1
+          AWS_CODE_DEPLOY_APPLICATION_NAME: PseudoTest
+          AWS_CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: PseudoTest-DepGrp
+          AWS_CODE_DEPLOY_APP_SOURCE: ~/repo
+          AWS_CODE_DEPLOY_S3_BUCKET: pseudotest-ec2
+          AWS_CODE_DEPLOY_S3_FILENAME: "${CIRCLE_BUILD_NUM}#${CIRCLE_SHA1:0:7}.zip"
 
     working_directory: ~/repo/test_django
 
     steps:
       - checkout:
           path: ~/repo
-
-      - run:
-          name: Install dependencies
-          command: |
-            python3 -m venv venv
-            . venv/bin/activate
-            pip install -r requirements.txt
 
       - run:
           name: Install code deploy
