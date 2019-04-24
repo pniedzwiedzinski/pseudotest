@@ -22,7 +22,7 @@ def send_answer(request):
             file_id = get_file_id()
             s3.put_object(
                 Bucket=S3_NAME,
-                Key="{0}@{1}".format(request.POST["task"]["name"], file_id),
+                Key="{0}@{1}".format(request.POST["task"], file_id),
                 Body=uploaded_file.read(),
             )
             return {"result": "success", "message": file_id}
