@@ -17,6 +17,17 @@ s3 = boto3.client("s3")
 BUCKET = os.environ["S3_BUCKET"]
 
 
+def parse_name(name):
+    try:
+        exercise, job_id = name.split("%40")
+        logger.info(f"Exercise: {exercise}, Job_id: {job_id}")
+    except ValueError:
+        logger.error("Invalid name: {}".format(name))
+        raise
+
+    return exercise, job_id
+
+
 def lambda_handler(event, context):
 
     logger.info(f"Using pseudo@{pseudo.__version__}")
@@ -24,12 +35,7 @@ def lambda_handler(event, context):
 
     KEY = event["Records"][0]["s3"]["object"]["key"]
 
-    try:
-        exercise, job_id = KEY.split("%40")
-        logger.info(f"Exercise: {exercise}, Job_id: {job_id}")
-    except ValueError:
-        logger.error("Invalid name: {}".format(KEY))
-        raise
+    exercise, job_id = parse_name(KEY)
 
     KEY = f"{exercise}@{job_id}"
 
@@ -56,6 +62,8 @@ def lambda_handler(event, context):
         upload_results("error", job_id)
 
     logger.info(results)
+    logger.info("Uploading results...")
     upload_results(json.dumps(results), job_id)
+    logger.info("Upload done.")
 
     return {"statusCode": 200, "body": json.dumps(results)}

@@ -1,6 +1,7 @@
 import os
-import pymysql
 import json
+import pymysql
+from .db import execute
 
 
 def serialize_tests(test_list):
@@ -15,22 +16,9 @@ def serialize_tests(test_list):
 
 
 def get_test(id):
-    connection = pymysql.connect(
-        host=os.environ["DB_HOST"],
-        user=os.environ["DB_USER"],
-        passwd=os.environ["DB_PASSWORD"],
-        db=os.environ["DB_NAME"],
-        cursorclass=pymysql.cursors.DictCursor,
+    results = execute(
+        "SELECT * FROM pseudo_test_test WHERE task_id_id = %s",
+        pymysql.escape_string(str(id)),
     )
-
-    try:
-        with connection.cursor() as cursor:
-            cursor.execute(
-                "SELECT * FROM pseudo_test_test WHERE task_id_id = %s",
-                pymysql.escape_string(str(id)),
-            )
-            results = cursor.fetchall()
-    finally:
-        connection.close()
 
     return serialize_tests(results)
