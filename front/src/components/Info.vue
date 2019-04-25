@@ -20,8 +20,9 @@ export default {
 .more_info {
   display: none;
   background: #fff;
-  padding: 10px;
-  min-width: 250px;
+  padding: 20px;
+  width: 250px;
+  text-align: left;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
 }
 
@@ -33,6 +34,7 @@ export default {
 .info:hover + .more_info {
   display: block;
   position: absolute;
+  right: 20px;
 }
 
 .icon {
