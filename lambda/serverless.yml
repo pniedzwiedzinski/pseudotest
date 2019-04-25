@@ -4,6 +4,9 @@ plugins:
   - serverless-python-requirements
 
 custom:
+  buckets:
+    prod: pseudotester
+    dev: pseudotester-dev
   pythonRequirements:
     dockerizePip: non-linux
 
@@ -30,10 +33,12 @@ provider:
 functions:
   pseudotester:
     handler: handler.lambda_handler
+    reservedConcurrency: 50
+    timeout: 900
     events:
       - s3:
-        bucket: pseudotester
-        event: s3:ObjectCreated:*
+          bucket: ${self:custom.buckets.${opt:stage}}
+          event: s3:ObjectCreated:*
 # you can add CloudFormation resource templates here
 #resources:
 #  Resources:

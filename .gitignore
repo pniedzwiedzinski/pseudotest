@@ -19,10 +19,13 @@ var/
 pseudotest_env/
 __pycache__
 db.sqlite3
+.pytest_cache
+.DS_Store
 
 crash
-__pycache__
 *.pdc
+
+mysql-data
 
 # Serverless directories
 .serverless
