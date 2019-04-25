@@ -137,7 +137,9 @@ jobs:
 
       - run:
           name: Install sudo
-          command: apt-get install -y sudo
+          command: |
+            apt-get update
+            apt-get install -y sudo
 
       - run:
           name: Install code deploy
