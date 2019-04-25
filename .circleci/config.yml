@@ -103,7 +103,9 @@ jobs:
 
       - run:
           name: Install npm serverless
-          command: npm ci
+          command: |
+            npm install serverless -g
+            npm ci
 
       - run:
           name: Install dependencies
@@ -132,6 +134,10 @@ jobs:
     steps:
       - checkout:
           path: ~/repo
+
+      - run:
+          name: Install sudo
+          command: apt-get install -y sudo
 
       - run:
           name: Install code deploy
