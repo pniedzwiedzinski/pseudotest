@@ -2,18 +2,22 @@
   <div class="history">
     <h3 class="header">Poprzednie wyniki</h3>
     <div class="entries">
-      <div class="entry">
-        <div class="status pass"></div>
-        <div class="task_name">Zadanie 1.2</div>
-        <div class="job_id">(sd8d93bh)</div>
-      </div>
+      <HistoryEntry title="Zadanie 1.2" id="2s9fv2h3" status="pass" :results="[1, 1, 1]"/>
+      <HistoryEntry title="Zadanie 1.2" id="2s9fv2h3" status="fail" :results="[1, 0, 1]"/>
+      <HistoryEntry title="Zadanie 1.2" id="2s9fv2h3" status="pending"/>
+      <HistoryEntry title="Zadanie 1.2" id="2s9fv2h3" status="error"/>
     </div>
   </div>
 </template>
 
 <script>
+import HistoryEntry from "./HistoryEntry.vue";
+
 export default {
-  name: "History"
+  name: "History",
+  components: {
+    HistoryEntry
+  }
 };
 </script>
 
@@ -28,32 +32,9 @@ export default {
 }
 
 .entries {
-  margin-top: 60px;
   width: 800px;
+
+  margin-top: 60px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
-}
-
-.entry {
-  height: 56px;
-
-  display: flex;
-  align-items: center;
-}
-
-.task_name {
-  margin: 10px;
-}
-
-.job_id {
-  opacity: 0.6;
-}
-
-.status {
-  height: 100%;
-  width: 15px;
-}
-
-.status.pass {
-  background: #78ff9e;
 }
 </style>
