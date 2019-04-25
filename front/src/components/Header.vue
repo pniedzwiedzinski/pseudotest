@@ -8,7 +8,9 @@
         pseudotest
         <img src="@/assets/GitHub.png" alt="Github icon">
       </a>
-      <a href>
+      <a
+        href="https://github.com/pniedzwiedzinski/pseudotest/issues/new?assignees=&labels=bug&template=bug_report.md"
+      >
         zgłoś błąd
         <img src="@/assets/warning.svg" alt>
       </a>

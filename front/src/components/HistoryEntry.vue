@@ -6,8 +6,12 @@
       <div class="job_id">({{id}})</div>
     </div>
     <div class="quickview">
-      <p v-if="status==='pending'">Sprawdzanie...</p>
-      <p v-if="status==='error'">Przerwanie</p>
+      <div v-if="status==='pending'">Sprawdzanie...</div>
+      <div v-if="status==='error'" class="results">
+        <Info
+          text="Sprawdzanie twojego zadania zostało przerwane ponieważ algorytm nie mógł zostać przetworzony. Sprawdź poprawność zapisu."
+        />Przerwanie
+      </div>
       <div class="results" v-else>
         <div v-for="result in results">
           <Check v-if="result===1"/>
@@ -21,6 +25,7 @@
 <script>
 import Check from "./Check.vue";
 import Fail from "./Fail.vue";
+import Info from "./Info.vue";
 
 export default {
   name: "HistoryEntry",
@@ -32,7 +37,8 @@ export default {
   },
   components: {
     Check,
-    Fail
+    Fail,
+    Info
   }
 };
 </script>
@@ -93,6 +99,7 @@ export default {
 .results {
   display: flex;
   flex-direction: row;
+  align-items: center;
 }
 </style>
 
