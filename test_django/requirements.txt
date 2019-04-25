@@ -4,3 +4,4 @@ botocore==1.12.134
 pymysql==0.9.3
 mysqlclient==1.4.2
 gunicorn==19.9.0
+django-cors-headers==2.5.2
