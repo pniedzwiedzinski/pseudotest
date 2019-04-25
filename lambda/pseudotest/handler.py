@@ -7,6 +7,7 @@ import boto3
 from botocore.exceptions import ClientError
 
 from .pseudotest import run_tests
+from .upload_results import upload_results
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -24,13 +25,13 @@ def lambda_handler(event, context):
     KEY = event["Records"][0]["s3"]["object"]["key"]
 
     try:
-        exercise, task_id = KEY.split("%40")
-        logger.info(f"Exercise: {exercise}, Task_id: {task_id}")
+        exercise, job_id = KEY.split("%40")
+        logger.info(f"Exercise: {exercise}, Job_id: {job_id}")
     except ValueError:
         logger.error("Invalid name: {}".format(KEY))
         raise
 
-    KEY = f"{exercise}@{task_id}"
+    KEY = f"{exercise}@{job_id}"
 
     try:
         logger.info("Starting file download")
@@ -49,8 +50,12 @@ def lambda_handler(event, context):
 
     logger.info("Got pseudocode:\n" + pseudocode)
     logger.info("Running test...")
-    results = run_tests(exercise, pseudocode, logger)
+    try:
+        results = run_tests(exercise, pseudocode, logger)
+    except SystemExit:
+        upload_results("error", job_id)
 
     logger.info(results)
+    upload_results(json.dumps(results), job_id)
 
     return {"statusCode": 200, "body": json.dumps(results)}

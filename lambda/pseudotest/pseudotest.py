@@ -3,7 +3,7 @@ from .testing import Testing
 from .get_test import get_test
 
 
-def test(instruction, inp, out):
+def test(instructions, inp, out):
     r = Testing(inp, out)
 
     try:
@@ -25,6 +25,7 @@ def run_tests(exercise, pseudocode, logger):
 
     for i, t in enumerate(tests):
         logger.info("Run test#" + str(i))
-        test(instructions, t["test_in"], t["test_out"])
+        r = test(instructions, t["test_in"], t["test_out"])
+        results.append(r)
 
     return results
