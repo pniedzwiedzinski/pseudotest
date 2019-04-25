@@ -1,0 +1,30 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /home/ubuntu/pseudotest
+permissions:
+  - object: /home/ubuntu/pseudotest
+    pattern: "**"
+    owner: ubuntu
+    group: ubuntu
+hooks:
+  BeforeInstall:
+    - location: scripts/clean.sh
+      timeout: 6000
+      runas: root
+  AfterInstall:
+    - location: scripts/install_dependencies.sh
+      timeout: 6000
+      runas: root
+    - location: scripts/migrate.sh
+      timeout: 6000
+      runas: ubuntu
+  ApplicationStart:
+    - location: scripts/start_application.sh
+      timeout: 6000
+      runas: root
+  ApplicationStop:
+    - location: scripts/stop_application.sh
+      timeout: 6000
+      runas: root

@@ -1,0 +1,5 @@
+.circleci
+.github
+.pytest_cache
+.vscode
+mysql-data
