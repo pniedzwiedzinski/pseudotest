@@ -6,7 +6,7 @@ import pseudo
 import boto3
 from botocore.exceptions import ClientError
 
-from pseudotest import run_tests
+from .pseudotest import run_tests
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
