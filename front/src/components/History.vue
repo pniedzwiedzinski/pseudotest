@@ -2,10 +2,7 @@
   <div class="history">
     <h3 class="header">Poprzednie wyniki</h3>
     <div class="entries">
-      <HistoryEntry title="Zadanie 1.2" id="2s9fv2h3" status="pass" :results="[1, 1, 1]"/>
-      <HistoryEntry title="Zadanie 1.2" id="2s9fv2h3" status="fail" :results="[1, 0, 1]"/>
-      <HistoryEntry title="Zadanie 1.2" id="2s9fv2h3" status="pending"/>
-      <HistoryEntry title="Zadanie 1.2" id="2s9fv2h3" status="error"/>
+      <HistoryEntry v-for="test in tests" :title="test.title" :id="test.id" :status="test.status" :results="test.results"/>
     </div>
   </div>
 </template>
@@ -17,6 +14,9 @@ export default {
   name: "History",
   components: {
     HistoryEntry
+  },
+  props: {
+    tests: Array
   }
 };
 </script>

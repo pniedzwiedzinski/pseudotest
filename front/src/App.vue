@@ -2,52 +2,51 @@
   <div id="app">
     <Header/>
     <Logo/>
-    <input ref="file" type="file">
-    <Button @click.native="send" text="Prześlij"/>
-    <History v-if="tests.length!==0"/>
-    <p v-else>
-      Sprawdź swoje rozwiązanie!
-    </p>
+    <Send v-on:submit-success="addTest" v-on:submit-fail="testFailed"/>
+    <History :tests="tests" v-if="tests.length!==0"/>
+    <p v-else>Sprawdź swoje rozwiązanie!</p>
   </div>
 </template>
 
 <script>
-import Button from "./components/Button.vue";
 import History from "./components/History.vue";
 import Header from "./components/Header.vue";
 import Logo from "./components/Logo.vue";
+import Send from "./components/Send.vue";
 import { openDB } from "idb";
-
-const host = "http://ec2-52-29-167-193.eu-central-1.compute.amazonaws.com";
 
 export default {
   name: "app",
   components: {
-    Button,
     History,
     Header,
-    Logo
+    Logo,
+    Send
   },
-  data(){
-    return{
-      tests:[],
-    }
+  data() {
+    return {
+      tests: [],
+      db: ""
+    };
   },
   methods: {
-    send: function() {
-      if (this.$refs["file"].files) {
-        let formData = new FormData();
-        formData.append("file", this.$refs["file"].files[0]);
-        formData.append("task", "add");
-        fetch(host + "/submit/", { method: "POST", body: formData })
-          .then(r => r.json())
-          .then(response => {
-            if (response.status == "success") {
-              console.log(response.message);
-            }
-          })
-          .catch(err => console.log(err));
-      }
+    addTest: async function() {
+      this.db.add("tests", {
+        title: "Zadanie 1.1",
+        id: "2s9fv2h2",
+        status: "fail",
+        results: [0, 1, 1]
+      });
+      this.tests = await this.db.getAll("tests");
+    },
+    testFailed: async function() {
+      this.db.add("tests", {
+        title: "Zadanie 1.5",
+        id: "2s9fv2h0",
+        status: "fail",
+        results: [0, 1, 1]
+      });
+      this.tests = await this.db.getAll("tests");
     }
   },
   created: async function() {
@@ -59,7 +58,8 @@ export default {
         });
       }
     });
-    this.tests = await db.getAll('tests');
+    this.db = db;
+    this.tests = await db.getAll("tests");
   }
 };
 </script>

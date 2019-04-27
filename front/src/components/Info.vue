@@ -16,7 +16,7 @@ export default {
 };
 </script>
 
-<style <style scoped>
+<style scoped>
 .more_info {
   display: none;
   background: #fff;
