@@ -2,7 +2,14 @@
   <div class="history">
     <h3 class="header">Poprzednie wyniki</h3>
     <div class="entries">
-      <HistoryEntry v-for="test in tests" :title="test.title" :id="test.id" :status="test.status" :results="test.results"/>
+      <HistoryEntry 
+        v-for="test in tests" 
+        :key="test.id" 
+        :title="test.title" 
+        :id="test.id" 
+        :status="test.status" 
+        :results="test.results"
+        @click.native="$emit('open-test',test.id)"/>
     </div>
   </div>
 </template>
@@ -22,19 +29,13 @@ export default {
 </script>
 
 <style scoped>
-.history {
-  position: relative;
-}
-
 .header {
-  position: absolute;
-  left: -40px;
+  text-align: left;
+  margin-left: -40px;
 }
 
 .entries {
   width: 800px;
-
-  margin-top: 60px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
 }
 </style>

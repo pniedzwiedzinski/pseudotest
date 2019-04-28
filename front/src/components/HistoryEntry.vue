@@ -1,9 +1,9 @@
 <template>
   <div class="entry">
     <div class="task_info">
-      <div class="status" v-bind:class="status"></div>
+      <div class="status" :class="status"></div>
       <div class="task_name">{{title}}</div>
-      <div class="job_id">({{id}})</div>
+      <div v-if="id!==undefined" class="job_id">({{id}})</div>
     </div>
     <div class="quickview">
       <div v-if="status==='pending'">Sprawdzanie...</div>
@@ -13,7 +13,7 @@
         />Przerwanie
       </div>
       <div class="results" v-else>
-        <div v-for="result in results">
+        <div :key="key" v-for="(result, key) in results">
           <Check v-if="result===1"/>
           <Fail v-else/>
         </div>
@@ -92,7 +92,6 @@ export default {
 
 .quickview {
   margin-right: 15px;
-
   color: rgba(59, 59, 59, 0.61);
 }
 
