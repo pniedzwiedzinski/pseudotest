@@ -18,6 +18,17 @@ var/
 .vscode
 pseudotest_env/
 __pycache__
+<<<<<<< HEAD
+=======
+db.sqlite3
+.pytest_cache
+.DS_Store
+
+crash
+*.pdc
+
+mysql-data
+>>>>>>> b1375fb8729194b8af98ba563c3060c0cdb68a54
 
 # Serverless directories
 .serverless

@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class PseudoTestConfig(AppConfig):
-    name = 'pseudo_test'
+    name = "pseudo_test"

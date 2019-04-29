@@ -4,6 +4,9 @@ plugins:
   - serverless-python-requirements
 
 custom:
+  buckets:
+    prod: pseudotester
+    dev: pseudotester-dev
   pythonRequirements:
     dockerizePip: non-linux
 
@@ -11,8 +14,15 @@ provider:
   name: aws
   runtime: python3.7
   versionFunctions: false
-  memorySize: 128
+  memorySize: 256
   region: eu-central-1
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:GetObject
+        - s3:DeleteObject
+      Resource:
+        - arn:aws:s3:::${self:custom.buckets.${opt:stage}}/*
 
 # you can define service wide environment variables here
 #  environment:
@@ -30,10 +40,18 @@ provider:
 functions:
   pseudotester:
     handler: handler.lambda_handler
+    reservedConcurrency: 50
+    timeout: 900
+    environment:
+      S3_BUCKET: ${self:custom.buckets.${opt:stage}}
+      DB_NAME: pseudotest
+      DB_USER: ${env:DB_USER}
+      DB_PASSWORD: ${env:DB_PASSWORD}
+      DB_HOST: ${env:DB_HOST}
     events:
       - s3:
-        bucket: pseudotester
-        event: s3:ObjectCreated:*
+          bucket: ${self:custom.buckets.${opt:stage}}
+          event: s3:ObjectCreated:*
 # you can add CloudFormation resource templates here
 #resources:
 #  Resources:

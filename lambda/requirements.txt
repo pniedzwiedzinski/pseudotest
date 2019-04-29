@@ -1,2 +1,4 @@
-git+https://github.com/pniedzwiedzinski/pseudo.git@release/0.8.2
-Click==7.0
+git+https://github.com/pniedzwiedzinski/pseudo.git
+boto3==1.9.134
+botocore==1.12.134
+pymysql==0.9.3
