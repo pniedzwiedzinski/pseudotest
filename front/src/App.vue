@@ -10,21 +10,23 @@
         <Button class="main-button-margin" @click.native="taskSelection=true" text="Prześlij"/>
       </div>
 
-      <div v-else>
+      <div class="test-details" v-else>
         <p>
           {{openedTest.title}}
           <span>{{openedTest.id}}</span>
         </p>
-        <HistoryEntry
-          v-for="(result, key) in openedTest.results"
-          :key="key"
-          :title="`Test #${key+1}`"
-          :status="result?'pass':'fail'"
-        />
+        <div class="entries entries--short">
+          <HistoryEntry
+            v-for="(result, key) in openedTest.results"
+            :key="key"
+            :title="`Test #${key+1}`"
+            :status="result?'pass':'fail'"
+          />
+        </div>
       </div>
 
       <History
-        class="margin-auto pb-100"
+        :class="openedTest===null?'margin-auto pb-100':''"
         @open-test="openTest"
         :tests="tests"
         v-if="tests.length!==0"
@@ -198,5 +200,15 @@ body {
 select {
   margin-left: auto;
   display: block;
+}
+.entries {
+  width: 800px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
+}
+.entries--short{
+  width: 400px;
+}
+.test-details{
+  margin: 100px 0;
 }
 </style>
