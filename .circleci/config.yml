@@ -117,6 +117,7 @@ jobs:
       - run:
           name: Setup credentials
           command: |
+            mkdir ~/.aws
             echo "[default]" > ~/.aws/credentials
             echo "aws_access_key_id = $SLS_ACCESS" >> ~/.aws/credentials
             echo "aws_secret_access_key = $SLS_SECRET" >> ~/.aws/credentials
