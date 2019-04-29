@@ -133,11 +133,11 @@ jobs:
           AWS_CODE_DEPLOY_REGION: eu-central-1
           AWS_CODE_DEPLOY_APPLICATION_NAME: PseudoTest
           AWS_CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: PseudoTest-DepGrp
-          AWS_CODE_DEPLOY_APP_SOURCE: "repo"
+          AWS_CODE_DEPLOY_APP_SOURCE: /root/repo
           AWS_CODE_DEPLOY_S3_BUCKET: pseudotest-ec2
           AWS_CODE_DEPLOY_S3_FILENAME: "${CIRCLE_BUILD_NUM}#${CIRCLE_SHA1:0:7}.zip"
 
-    working_directory: ~
+    working_directory: ~/repo
 
     steps:
       - checkout:
