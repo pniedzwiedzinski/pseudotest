@@ -11,7 +11,7 @@ from test_django.settings import S3_NAME
 
 from .api.dbhandlers import get_all_file_ids, get_all_tasks
 from .models import Task, Score
-from .serializers import TaskSerializer
+from .serializers import TaskSerializer, ScoreSerializer
 
 s3 = boto3.client("s3")
 
@@ -49,3 +49,7 @@ def get_file_id():
 class TaskView(viewsets.ModelViewSet):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
+
+class ScoreView(viewsets.ModelViewSet):
+    queryset = Score.objects.all()
+    serializer_class = ScoreSerializer
