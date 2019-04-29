@@ -115,6 +115,13 @@ jobs:
             pip install -r requirements.txt
 
       - run:
+          name: Setup credentials
+          command: |
+            echo "[default]" > ~/.aws/credentials
+            echo "aws_access_key_id = $SLS_ACCESS" >> ~/.aws/credentials
+            echo "aws_secret_access_key = $SLS_SECRET" >> ~/.aws/credentials
+
+      - run:
           name: Deploy serverless
           command: sls deploy --stage prod
 
