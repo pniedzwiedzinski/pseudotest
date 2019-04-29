@@ -1,8 +1,9 @@
 from pseudo import compile
-from testing import Testing
+from .testing import Testing
+from .get_test import get_test
 
 
-def test(instruction, inp, out):
+def test(instructions, inp, out):
     r = Testing(inp, out)
 
     try:
@@ -16,9 +17,7 @@ def test(instruction, inp, out):
 
 def run_tests(exercise, pseudocode, logger):
 
-    # TODO: Get tests from RDS
-    rds = {"a": [{"in": [1, 2], "out": [3]}, {"in": [234, 567], "out": [801]}]}
-    tests = rds[exercise]
+    tests = get_test(exercise)
 
     instructions = compile(pseudocode)
 
@@ -26,6 +25,7 @@ def run_tests(exercise, pseudocode, logger):
 
     for i, t in enumerate(tests):
         logger.info("Run test#" + str(i))
-        test(instructions, t["in"], t["out"])
+        r = test(instructions, t["test_in"], t["test_out"])
+        results.append(r)
 
     return results
