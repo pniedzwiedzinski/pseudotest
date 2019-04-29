@@ -4,7 +4,6 @@
     <body>
         <h1>Upload</h1>
         <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
         <input type="file" name="file">
         <select name="task">
             {% for task in task_list %}
