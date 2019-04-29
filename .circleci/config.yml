@@ -103,7 +103,9 @@ jobs:
 
       - run:
           name: Install npm serverless
-          command: npm ci
+          command: |
+            npm install serverless -g
+            npm ci
 
       - run:
           name: Install dependencies
@@ -111,6 +113,13 @@ jobs:
             python3 -m venv venv
             . venv/bin/activate
             pip install -r requirements.txt
+
+      - run:
+          name: Setup credentials
+          command: |
+            echo "[default]" > ~/.aws/credentials
+            echo "aws_access_key_id = $SLS_ACCESS" >> ~/.aws/credentials
+            echo "aws_secret_access_key = $SLS_SECRET" >> ~/.aws/credentials
 
       - run:
           name: Deploy serverless
@@ -132,6 +141,12 @@ jobs:
     steps:
       - checkout:
           path: ~/repo
+
+      - run:
+          name: Install sudo
+          command: |
+            apt-get update
+            apt-get install -y sudo
 
       - run:
           name: Install code deploy
