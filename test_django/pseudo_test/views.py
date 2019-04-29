@@ -6,6 +6,7 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 
 from rest_framework import viewsets
+from rest_framework.response import Response
 
 from test_django.settings import S3_NAME
 
@@ -46,10 +47,15 @@ def get_file_id():
 
 #REST API
 
-class TaskView(viewsets.ModelViewSet):
-    queryset = Task.objects.all()
-    serializer_class = TaskSerializer
+class TaskView(viewsets.ViewSet):
+    def list(self,request):
+        queryset = Task.objects.all()
+        serializer = TaskSerializer(queryset, many=True)
+        return Response(serializer.data)
+
 
 class ScoreView(viewsets.ModelViewSet):
-    queryset = Score.objects.all()
-    serializer_class = ScoreSerializer
+    def list(self, request):
+        queryset = Score.objects.all()
+        serializer = ScoreSerializer(queryset, many=True)
+        return Response(serializer.data)

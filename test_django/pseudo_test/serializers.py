@@ -10,4 +10,4 @@ class TaskSerializer(serializers.ModelSerializer):
 class ScoreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Score
-        fields = ('file_id', 'task_id', 'score')
+        fields = ('file_id', 'task_id', 'score', 'score_date')
