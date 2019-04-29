@@ -5,10 +5,13 @@ import boto3
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 
+from rest_framework import viewsets
+
 from test_django.settings import S3_NAME
 
 from .api.dbhandlers import get_all_file_ids, get_all_tasks
 from .models import Task, Score
+from .serializers import TaskSerializer
 
 s3 = boto3.client("s3")
 
@@ -39,3 +42,10 @@ def get_file_id():
         if Score.objects.filter(file_id=new_file_id):
             continue
         return new_file_id
+
+
+#REST API
+
+class TaskView(viewsets.ModelViewSet):
+    queryset = Task.objects.all()
+    serializer_class = TaskSerializer
