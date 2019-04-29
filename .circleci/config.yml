@@ -132,10 +132,11 @@ jobs:
           AWS_CODE_DEPLOY_REGION: eu-central-1
           AWS_CODE_DEPLOY_APPLICATION_NAME: PseudoTest
           AWS_CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: PseudoTest-DepGrp
+          AWS_CODE_DEPLOY_APP_SOURCE: "repo"
           AWS_CODE_DEPLOY_S3_BUCKET: pseudotest-ec2
           AWS_CODE_DEPLOY_S3_FILENAME: "${CIRCLE_BUILD_NUM}#${CIRCLE_SHA1:0:7}.zip"
 
-    working_directory: ~/repo
+    working_directory: ~
 
     steps:
       - checkout:
@@ -150,10 +151,6 @@ jobs:
       - run:
           name: Install code deploy
           command: npm install aws-code-deploy -g
-          
-      - run:
-          name: Set path
-          command: export AWS_CODE_DEPLOY_APP_SOURCE=$(pwd)
 
       - run:
           name: Deploy
