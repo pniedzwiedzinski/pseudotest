@@ -2,7 +2,7 @@ import os
 from uuid import uuid4
 
 import boto3
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 
 from test_django.settings import S3_NAME
@@ -25,9 +25,9 @@ def send_answer(request):
                 Key="{0}@{1}".format(request.POST["task"], file_id),
                 Body=uploaded_file.read(),
             )
-            return {"result": "success", "message": file_id}
+            return JsonResponse({"result": "success", "message": file_id})
         else:
-            return {"result": "error", "message": "wrong file format or size"}
+            return JsonResponse({"result": "error", "message": "wrong file format or size"})
 
     context = {"task_list": get_all_tasks()}
     return render(request, "pseudo_test/send_answer.html", context)
