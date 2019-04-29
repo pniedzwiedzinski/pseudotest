@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="send">
     <input ref="file" type="file">
     <Button @click.native="send" text="Prześlij"/>
   </div>
@@ -28,7 +28,9 @@ export default {
               this.$emit("submit-success", response.body);
             }
           })
-          .catch(err => {this.$emit("submit-fail", err)});
+          .catch(err => {
+            this.$emit("submit-fail", err);
+          });
       }
     }
   }
@@ -36,5 +38,13 @@ export default {
 </script>
 
 <style scoped>
+.send {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+#app button{
+  margin: 0;
+}
 </style>
 

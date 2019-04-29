@@ -1,7 +1,6 @@
 <template>
     <a href="/">
-        logo
-        <img src="@/assets/warning.svg" alt="pseudotest">
+        <img src="@/assets/logo.svg" alt="pseudotest">
     </a>
 </template>
 

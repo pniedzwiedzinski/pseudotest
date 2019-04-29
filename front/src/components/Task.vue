@@ -1,7 +1,6 @@
 <template>
   <div>
-    <p>{{task.title}}</p>
-    <p>{{task.body}}</p>
+    <p class="task">{{task}}</p>
   </div>
 </template>
 
@@ -9,8 +8,14 @@
 export default {
   name: "Task",
   props: {
-    task: Object
+    task: String
   }
 };
 </script>
+
+<style scoped>
+.task {
+  margin: 50px 0;
+}
+</style>
 

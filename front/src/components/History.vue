@@ -3,7 +3,7 @@
     <h3 class="header">Poprzednie wyniki</h3>
     <div class="entries">
       <HistoryEntry 
-        v-for="test in tests" 
+        v-for="test in tests.slice().reverse()" 
         :key="test.id" 
         :title="test.title" 
         :id="test.id" 
