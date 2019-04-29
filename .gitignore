@@ -18,7 +18,6 @@ var/
 .vscode
 pseudotest_env/
 __pycache__
-db.sqlite3
 
 # Serverless directories
 .serverless
