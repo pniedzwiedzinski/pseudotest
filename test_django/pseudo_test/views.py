@@ -23,14 +23,18 @@ s3 = boto3.client("s3")
 def send_answer(request):
     if request.method == "POST":
         uploaded_file = request.FILES["file"]
-        if (
-            uploaded_file.name[-4:] == ".txt" or uploaded_file.name[-4:] == ".pdc"
-        ) and uploaded_file.size < 1000000:
+
+        valid_extension = uploaded_file.name[-4:] in {".txt", ".pdc"}
+        file_is_less_than_1MB = uploaded_file.size < 1048576
+
+        if valid_extension and file_is_less_than_1MB:
+
             # Check if task exists
             task = Task.objects.filter(name=request.POST["task"]).first()
             if task is None:
                 return JsonResponse({"result": "error", "message": "invalid task"})
 
+            # Upload to S3
             file_id = get_file_id()
             s3.put_object(
                 Bucket=S3_NAME,
@@ -38,6 +42,7 @@ def send_answer(request):
                 Body=uploaded_file.read(),
             )
 
+            # Save to DB
             new_score = Score(file_id=file_id, task_id=task, score="")
             new_score.save()
 
