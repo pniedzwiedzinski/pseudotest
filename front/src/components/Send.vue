@@ -24,8 +24,10 @@ export default {
         fetch(host + "/submit/", { method: "POST", body: formData })
           .then(r => r.json())
           .then(response => {
-            if (response.status == "success") {
-              this.$emit("submit-success", response.body);
+            if (response.result === "error") {
+              console.error(response.message);
+            } else {
+              this.$emit("submit-success", response.message);
             }
           })
           .catch(err => {
@@ -43,7 +45,7 @@ export default {
   align-items: center;
   justify-content: flex-end;
 }
-#app button{
+#app button {
   margin: 0;
 }
 </style>

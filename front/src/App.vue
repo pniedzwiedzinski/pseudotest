@@ -34,7 +34,6 @@
       <p v-else class="check-your-solution margin-auto">Sprawdź swoje rozwiązanie!</p>
     </div>
 
-
     <div v-if="taskSelection">
       <Header logo/>
       <div class="container">
@@ -85,24 +84,26 @@ export default {
           body: "Tutaj mamy sobie treść zadania jako plaintext 2"
         }
       ],
-      selectedTask: null
+      selectedTask: null,
+      pendingTasks: []
     };
   },
   methods: {
-    addTest: async function({title,id,status,results}) {
+    addTest: async function(id) {
       this.db.add("tests", {
-        title: title,
+        title: this.selectedTask.title,
         id: id,
-        status: status,
-        results: results
+        status: "pending",
+        results: []
       });
+      this.pendingTasks.push(id)
       this.tests = await this.db.getAll("tests");
       this.taskSelection = false;
       this.selectedTask = this.tasks[0];
       this.openedTest = this.tests[this.tests.length - 1];
     },
     testFailed: async function(error) {
-      console.log(error)
+      console.error(error);
     },
     openTest: function(id) {
       for (const test of this.tests) {
@@ -118,19 +119,39 @@ export default {
           this.selectedTask = task;
         }
       }
+    },
+    refreshPending: function() {
+      for (const pendingTask of this.pendingTasks) {
+        fetch(host+"/get?id="+pendingTask)
+        .then(r=>r.json())
+        .then(response=>{
+          if(response.message==="error"){
+
+          }else if(Array.isArray(response.message)){
+            
+          }
+          
+
+        })
+      }
     }
   },
   created: async function() {
     const db = await openDB("Pseudotest", 1, {
       upgrade(db) {
         db.createObjectStore("tests", {
-          keyPath: "id",
+          keyPath: "key",
           autoIncrement: true
         });
       }
     });
     this.db = db;
     this.tests = await db.getAll("tests");
+    for (const test of this.tests) {
+      if(test.status === "pending"){
+        this.pendingTasks.push(test.id)
+      }
+    }
     this.selectedTask = this.tasks[0];
   }
 };
@@ -196,10 +217,10 @@ select {
   width: 800px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
 }
-.entries--short{
+.entries--short {
   width: 400px;
 }
-.test-details{
+.test-details {
   margin: 100px 0;
 }
 </style>
