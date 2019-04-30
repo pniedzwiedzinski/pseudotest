@@ -79,7 +79,7 @@ def get_answer(request, file_id):
         return JsonResponse({"status": "error"})
     elif score.score == "":
         return JsonResponse({"status": "pending"})
-    return JsonResponse({"status": score.score})
+    return JsonResponse({"status": json.loads(score.score)})
 
 
 class TaskView(viewsets.ViewSet):
