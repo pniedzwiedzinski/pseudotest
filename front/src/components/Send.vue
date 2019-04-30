@@ -31,11 +31,7 @@ export default {
         this.isLoading = true;
         let formData = new FormData();
         formData.append("file", this.$refs["file"].files[0]);
-<<<<<<< HEAD
         formData.append("task", this.taskId);
-=======
-        formData.append("task", 1);
->>>>>>> 5b091df3443bced69486c77edcce18bb83086df6
         fetch(host + "/submit/", { method: "POST", body: formData })
           .then(r => r.json())
           .then(response => {

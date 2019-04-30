@@ -94,7 +94,6 @@ export default {
       this.tests = await this.db.getAllFromIndex("tests", "time");
       this.taskSelection = false;
       this.selectedTask = this.tasks[0];
-      this.openedTest = this.tests[this.tests.length - 1];
     },
     testFailed: async function(error) {
       alert(error);
@@ -128,15 +127,22 @@ export default {
               pendingTasks.splice(pendingTasks.indexOf(pendingTask), 1);
               return this.db.getAllFromIndex("tests", "time");
             } else if (Array.isArray(response.status)) {
-              db.transaction("tests", "readwrite")
+              if(response.status.includes(0)){
+                db.transaction("tests", "readwrite")
                 .objectStore("tests")
-                .put(Object.assign(pendingTask, { status:"pass",results: response.status }));
+                .put(Object.assign(pendingTask, { status:"fail",results: response.status }));
+              }else{
+                db.transaction("tests", "readwrite")
+                .objectStore("tests")
+                .put(Object.assign(pendingTask, { status:"pass",results: response.status }));  
+              }
               pendingTasks.splice(pendingTasks.indexOf(pendingTask), 1);
               return this.db.getAllFromIndex("tests", "time");
             }
           })
           .then(refreshedTests=>{
             this.tests = refreshedTests;
+            this.openedTest = this.tests[this.tests.length - 1];//possible fix in the future
           });
       }
       setTimeout(this.refreshPending, 5000);
