@@ -7,7 +7,8 @@ def get_all_tasks():
     tasks = list(task_list)
     task_list = [
     task["name"]
-    for task in tasks]
+    for task in tasks
+                ]
     return task_list
 
 
