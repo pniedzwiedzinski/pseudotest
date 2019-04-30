@@ -55,7 +55,7 @@ import Logo from "./components/Logo.vue";
 import Send from "./components/Send.vue";
 import Button from "./components/Button.vue";
 import Task from "./components/Task.vue";
-import { openDB } from "idb/with-async-ittr.js";
+import { openDB } from "idb";
 
 export default {
   name: "app",
@@ -99,7 +99,7 @@ export default {
       };
       this.db.add("tests", newTask);
       this.pendingTasks.push(newTask);
-      this.tests = await this.db.getAll("tests");
+      this.tests = await this.db.getAllFromIndex("tests", "time");
       this.taskSelection = false;
       this.selectedTask = this.tasks[0];
       this.openedTest = this.tests[this.tests.length - 1];
@@ -125,33 +125,35 @@ export default {
     refreshPending: async function() {
       const host = "https://pseudotest.herokuapp.com";
       for (const pendingTask of this.pendingTasks) {
+      const db = this.db;
+      const pendingTasks = this.pendingTasks;
         fetch(host + "/get/" + pendingTask.id)
           .then(r => r.json())
           .then(response => {
-            const store = this.db.objectStore("tests");
             if (response.status === "error") {
-              store.put(Object.assign(pendingTask, { status: "error" }));
+              db.transaction("tests","readwrite").objectStore("tests").put(Object.assign(pendingTask, { status: "error" }));
             } else if (Array.isArray(response.status)) {
-              store.put(
+              db.transaction("tests","readwrite").objectStore("tests").put(
                 Object.assign(pendingTask, { status: response.status })
               );
+              pendingTasks.splice(pendingTasks.indexOf(pendingTask), 1);
             }
           });
       }
-      console.log("odświeżam");
       setTimeout(this.refreshPending, 5000);
     }
   },
   created: async function() {
     const db = await openDB("Pseudotest", 1, {
       upgrade(db) {
-        db.createObjectStore("tests", {
+        const store = db.createObjectStore("tests", {
           keyPath: "id"
         });
+        store.createIndex("time", "time");
       }
     });
     this.db = db;
-    this.tests = await db.getAll("tests");
+    this.tests = await this.db.getAllFromIndex("tests", "time");
     this.pendingTasks = this.tests.filter(test => test.status === "pending");
     this.selectedTask = this.tasks[0];
     this.refreshPending();
