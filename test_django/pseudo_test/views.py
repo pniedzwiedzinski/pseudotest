@@ -43,7 +43,9 @@ def send_answer(request):
             )
 
             # Save to DB
-            new_score = Score(file_id=file_id, task_id=task, score="")
+            new_score = Score(
+                file_id=file_id, task_id=task, score="", score_date=datetime.now()
+            )
             new_score.save()
 
             return JsonResponse({"result": "success", "message": file_id})
@@ -70,7 +72,10 @@ def get_answer(request, file_id):
     if score is None:
         raise Http404('{"result": "error", message: "id does not exist"}')
 
-    if datetime.now() - score.score_date > timedelta(minutes=15):
+    # Remove timezone info
+    date = score.score_date.replace(tzinfo=None)
+
+    if datetime.now() - date > timedelta(minutes=15):
         return JsonResponse({"status": "error"})
     elif score.score == "":
         return JsonResponse({"status": "pending"})
