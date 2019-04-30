@@ -5,10 +5,7 @@ def get_all_tasks():
     """returns All tasks from db in a list"""
     task_list = Task.objects.all().values("name")
     tasks = list(task_list)
-    task_list = [
-    task["name"]
-    for task in tasks
-                ]
+    task_list = [task["name"] for task in tasks]
     return task_list
 
 

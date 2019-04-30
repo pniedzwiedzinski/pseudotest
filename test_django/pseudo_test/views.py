@@ -63,9 +63,7 @@ def get_answer(request, xd):
         return JsonResponse({"status": "pending"})
     return JsonResponse({"status": score.score})            
 
-
 class TaskView(viewsets.ViewSet):
-    
     def list(self, request):
         queryset = Task.objects.all()
         serializer = TaskSerializer(queryset, many=True)
