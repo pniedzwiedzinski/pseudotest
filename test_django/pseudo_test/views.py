@@ -36,8 +36,8 @@ def send_answer(request):
             """
 
             task = Task.objects.get(name=request.POST["task"])
-            p = Score(file_id=file_id, task_id=task, score="")
-            p.save()
+            new_score = Score(file_id=file_id, task_id=task, score="")
+            new_score.save()
 
             return JsonResponse({"result": "success", "message": file_id})
         else:
@@ -55,8 +55,8 @@ def get_file_id():
         return new_file_id
 
 
-def get_answer(request, xd):
-    score = Score.objects.get(file_id=xd)
+def get_answer(request, file_id):
+    score = Score.objects.get(file_id=file_id)
     if datetime.now() - score.score_date > timedelta(minutes=15):
         return JsonResponse({"status": "error"})
     elif score.score == "":

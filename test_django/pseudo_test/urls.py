@@ -6,6 +6,6 @@ router = routers.DefaultRouter()
 router.register('tasks', views.TaskView, base_name='TaskView')
 
 urlpatterns = [path("submit/", views.send_answer, name="submit"),
-               path("get/<xd>", views.get_answer, name="get"),
+               path("get/<file_id>", views.get_answer, name="get"),
                path("", include(router.urls))]
 
