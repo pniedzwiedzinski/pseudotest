@@ -1,1 +1,1 @@
-web: gunicorn test_django.wsgi:application
+web: cd test_django && python3 manage.py collectstatic --noinput && gunicorn test_django.wsgi:application
