@@ -89,29 +89,20 @@ export default {
     };
   },
   methods: {
-    addTest: async function() {
+    addTest: async function({title,id,status,results}) {
       this.db.add("tests", {
-        title: "Zadanie 1.1",
-        id: "2s9fv2h8",
-        status: "fail",
-        results: [0, 1, 1]
+        title: title,
+        id: id,
+        status: status,
+        results: results
       });
       this.tests = await this.db.getAll("tests");
       this.taskSelection = false;
       this.selectedTask = this.tasks[0];
       this.openedTest = this.tests[this.tests.length - 1];
     },
-    testFailed: async function() {
-      this.db.add("tests", {
-        title: "Zadanie 1.1",
-        id: "2s9fv2h8",
-        status: "fail",
-        results: [0, 1, 1]
-      });
-      this.tests = await this.db.getAll("tests");
-      this.taskSelection = false;
-      this.selectedTask = this.tasks[0];
-      this.openedTest = this.tests[this.tests.length - 1];
+    testFailed: async function(error) {
+      console.log(error)
     },
     openTest: function(id) {
       for (const test of this.tests) {
