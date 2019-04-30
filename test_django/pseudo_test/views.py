@@ -36,7 +36,7 @@ def send_answer(request):
             """
 
             task = Task.objects.get(name=request.POST["task"])
-            p = Score(file_id=file_id,task_id=task,score="")
+            p = Score(file_id=file_id, task_id=task, score="")
             p.save()
 
             return JsonResponse({"result": "success", "message": file_id})
@@ -55,20 +55,17 @@ def get_file_id():
         return new_file_id
 
 
-def get_answer(request,xd):
+def get_answer(request, xd):
     score = Score.objects.get(file_id=xd)
     if datetime.now() - score.score_date > timedelta(minutes=15):
-        return JsonResponse({"status":"error"})
+        return JsonResponse({"status": "error"})
     elif score.score == "":
-        return JsonResponse({"status":"pending"})
-    return JsonResponse({"status":score.score})            
-    
-
+        return JsonResponse({"status": "pending"})
+    return JsonResponse({"status": score.score})            
 
 #REST API
-
 class TaskView(viewsets.ViewSet):
-    def list(self,request):
+    def list(self, request):
         queryset = Task.objects.all()
         serializer = TaskSerializer(queryset, many=True)
         return Response(serializer.data)
@@ -79,3 +76,4 @@ class ScoreView(viewsets.ViewSet):
         queryset = Score.objects.all()
         serializer = ScoreSerializer(queryset, many=True)
         return Response(serializer.data)
+        

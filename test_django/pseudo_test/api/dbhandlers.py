@@ -1,5 +1,6 @@
 from pseudo_test.models import Task, Score, Test
 
+
 def get_all_tasks():
     """returns All tasks from db in a list"""
     task_list = Task.objects.all().values("name")
