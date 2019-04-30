@@ -20,7 +20,7 @@ export default {
       if (this.$refs["file"].files) {
         let formData = new FormData();
         formData.append("file", this.$refs["file"].files[0]);
-        formData.append("task", "add");
+        formData.append("task", 1);
         fetch(host + "/submit/", { method: "POST", body: formData })
           .then(r => r.json())
           .then(response => {
