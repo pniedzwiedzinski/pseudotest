@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import datetime
 
 
 class Task(models.Model):
@@ -23,7 +24,7 @@ class Test(models.Model):
 class Score(models.Model):
     # scores of tested files that are deleted if too old
     file_id = models.TextField()
-    score_date = models.DateTimeField()
+    score_date = models.DateTimeField(default=datetime.now())
     task_id = models.ForeignKey(Task, on_delete=models.CASCADE)
     score = models.CharField(max_length=50)
 
