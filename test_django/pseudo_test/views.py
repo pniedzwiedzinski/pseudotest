@@ -27,14 +27,11 @@ def send_answer(request):
             uploaded_file.name[-4:] == ".txt" or uploaded_file.name[-4:] == ".pdc"
         ) and uploaded_file.size < 1000000:
             file_id = get_file_id()
-            """
             s3.put_object(
                 Bucket=S3_NAME,
                 Key="{0}@{1}".format(request.POST["task"], file_id),
                 Body=uploaded_file.read(),
             )
-            """
-
             task = Task.objects.get(name=request.POST["task"])
             new_score = Score(file_id=file_id, task_id=task, score="")
             new_score.save()
