@@ -14,6 +14,10 @@ from .api.dbhandlers import get_all_file_ids, get_all_tasks
 from .models import Task, Score
 from .serializers import TaskSerializer, ScoreSerializer
 
+import requests
+import json
+from datetime import datetime, timedelta
+
 s3 = boto3.client("s3")
 
 
@@ -24,11 +28,18 @@ def send_answer(request):
             uploaded_file.name[-4:] == ".txt" or uploaded_file.name[-4:] == ".pdc"
         ) and uploaded_file.size < 1000000:
             file_id = get_file_id()
+            """
             s3.put_object(
                 Bucket=S3_NAME,
                 Key="{0}@{1}".format(request.POST["task"], file_id),
                 Body=uploaded_file.read(),
             )
+            """
+
+            task = Task.objects.get(name=request.POST["task"])
+            p = Score(file_id=file_id,task_id=task,score="")
+            p.save()
+
             return JsonResponse({"result": "success", "message": file_id})
         else:
             return JsonResponse({"result": "error", "message": "wrong file format or size"})
@@ -45,6 +56,16 @@ def get_file_id():
         return new_file_id
 
 
+def get_answer(request,xd):
+    score = Score.objects.get(file_id=xd)
+    if datetime.now() - score.score_date > timedelta(minutes=15):
+        return JsonResponse({"status":"error"})
+    elif score.score == "":
+        return JsonResponse({"status":"pending"})
+    return JsonResponse({"status":score.score})            
+    
+
+
 #REST API
 
 class TaskView(viewsets.ViewSet):
@@ -54,7 +75,7 @@ class TaskView(viewsets.ViewSet):
         return Response(serializer.data)
 
 
-class ScoreView(viewsets.ModelViewSet):
+class ScoreView(viewsets.ViewSet):
     def list(self, request):
         queryset = Score.objects.all()
         serializer = ScoreSerializer(queryset, many=True)
