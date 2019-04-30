@@ -55,7 +55,7 @@ import Logo from "./components/Logo.vue";
 import Send from "./components/Send.vue";
 import Button from "./components/Button.vue";
 import Task from "./components/Task.vue";
-import { openDB } from "idb";
+import { openDB } from "idb/with-async-ittr.js";
 
 export default {
   name: "app",
@@ -90,13 +90,15 @@ export default {
   },
   methods: {
     addTest: async function(id) {
-      this.db.add("tests", {
+      const newTask = {
         title: this.selectedTask.title,
         id: id,
         status: "pending",
-        results: []
-      });
-      this.pendingTasks.push(id)
+        results: [],
+        time: Date.now()
+      };
+      this.db.add("tests", newTask);
+      this.pendingTasks.push(newTask);
       this.tests = await this.db.getAll("tests");
       this.taskSelection = false;
       this.selectedTask = this.tasks[0];
@@ -120,39 +122,39 @@ export default {
         }
       }
     },
-    refreshPending: function() {
+    refreshPending: async function() {
+      const host = "https://pseudotest.herokuapp.com";
       for (const pendingTask of this.pendingTasks) {
-        fetch(host+"/get?id="+pendingTask)
-        .then(r=>r.json())
-        .then(response=>{
-          if(response.message==="error"){
-
-          }else if(Array.isArray(response.message)){
-            
-          }
-          
-
-        })
+        fetch(host + "/get/" + pendingTask.id)
+          .then(r => r.json())
+          .then(response => {
+            const store = this.db.objectStore("tests");
+            if (response.status === "error") {
+              store.put(Object.assign(pendingTask, { status: "error" }));
+            } else if (Array.isArray(response.status)) {
+              store.put(
+                Object.assign(pendingTask, { status: response.status })
+              );
+            }
+          });
       }
+      console.log("odświeżam");
+      setTimeout(this.refreshPending, 5000);
     }
   },
   created: async function() {
     const db = await openDB("Pseudotest", 1, {
       upgrade(db) {
         db.createObjectStore("tests", {
-          keyPath: "key",
-          autoIncrement: true
+          keyPath: "id"
         });
       }
     });
     this.db = db;
     this.tests = await db.getAll("tests");
-    for (const test of this.tests) {
-      if(test.status === "pending"){
-        this.pendingTasks.push(test.id)
-      }
-    }
+    this.pendingTasks = this.tests.filter(test => test.status === "pending");
     this.selectedTask = this.tasks[0];
+    this.refreshPending();
   }
 };
 </script>
