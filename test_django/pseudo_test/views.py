@@ -32,13 +32,20 @@ def send_answer(request):
                 Key="{0}@{1}".format(request.POST["task"], file_id),
                 Body=uploaded_file.read(),
             )
-            task = Task.objects.get(name=request.POST["task"])
+
+            # Check if task exists
+            task = Task.objects.filter(name=request.POST["task"]).first()
+            if task is None:
+                return JsonResponse({"result": "error", "message": "invalid task"})
+
             new_score = Score(file_id=file_id, task_id=task, score="")
             new_score.save()
 
             return JsonResponse({"result": "success", "message": file_id})
         else:
-            return JsonResponse({"result": "error", "message": "wrong file format or size"})
+            return JsonResponse(
+                {"result": "error", "message": "wrong file format or size"}
+            )
 
     context = {"task_list": get_all_tasks()}
     return render(request, "pseudo_test/send_answer.html", context)
