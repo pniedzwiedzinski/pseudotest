@@ -38,9 +38,9 @@
       <Header logo/>
       <div class="container">
         <select @change="selectTask($event)" name="task" id="task">
-          <option v-for="task in tasks" :key="task.title" :value="task.title">{{task.title}}</option>
+          <option v-for="task in tasks" :key="task.name" :value="task.name">{{task.name}}</option>
         </select>
-        <Task :task="selectedTask.body"/>
+        <Task :task="selectedTask.description"/>
         <Send @submit-success="addTest" @submit-fail="testFailed"/>
       </div>
     </div>
@@ -70,20 +70,12 @@ export default {
   },
   data() {
     return {
+      host: "https://pseudotest.herokuapp.com",
       tests: [],
       openedTest: null,
       db: null,
       taskSelection: false,
-      tasks: [
-        {
-          title: "Zadanie 1.1",
-          body: "Tutaj mamy sobie treść zadania jako plaintext"
-        },
-        {
-          title: "Zadanie 1.2",
-          body: "Tutaj mamy sobie treść zadania jako plaintext 2"
-        }
-      ],
+      tasks: [],
       selectedTask: null,
       pendingTasks: []
     };
@@ -91,7 +83,7 @@ export default {
   methods: {
     addTest: async function(id) {
       const newTask = {
-        title: this.selectedTask.title,
+        title: this.selectedTask.name,
         id: id,
         status: "pending",
         results: [],
@@ -115,27 +107,28 @@ export default {
       }
     },
     selectTask: function(event) {
-      const title = event.target.value;
+      const name = event.target.value;
       for (const task of this.tasks) {
-        if (task.title === title) {
+        if (task.name === name) {
           this.selectedTask = task;
         }
       }
     },
     refreshPending: async function() {
-      const host = "https://pseudotest.herokuapp.com";
       for (const pendingTask of this.pendingTasks) {
-      const db = this.db;
-      const pendingTasks = this.pendingTasks;
-        fetch(host + "/get/" + pendingTask.id)
+        const db = this.db;
+        const pendingTasks = this.pendingTasks;
+        fetch(this.host + "/get/" + pendingTask.id)
           .then(r => r.json())
           .then(response => {
             if (response.status === "error") {
-              db.transaction("tests","readwrite").objectStore("tests").put(Object.assign(pendingTask, { status: "error" }));
+              db.transaction("tests", "readwrite")
+                .objectStore("tests")
+                .put(Object.assign(pendingTask, { status: "error" }));
             } else if (Array.isArray(response.status)) {
-              db.transaction("tests","readwrite").objectStore("tests").put(
-                Object.assign(pendingTask, { status: response.status })
-              );
+              db.transaction("tests", "readwrite")
+                .objectStore("tests")
+                .put(Object.assign(pendingTask, { status: response.status }));
               pendingTasks.splice(pendingTasks.indexOf(pendingTask), 1);
             }
           });
@@ -144,6 +137,12 @@ export default {
     }
   },
   created: async function() {
+    fetch(this.host + "/tasks/")
+      .then(r => r.json())
+      .then(response => {
+        this.tasks = response;
+        this.selectedTask = this.tasks[0];
+      });
     const db = await openDB("Pseudotest", 1, {
       upgrade(db) {
         const store = db.createObjectStore("tests", {
@@ -155,7 +154,6 @@ export default {
     this.db = db;
     this.tests = await this.db.getAllFromIndex("tests", "time");
     this.pendingTasks = this.tests.filter(test => test.status === "pending");
-    this.selectedTask = this.tasks[0];
     this.refreshPending();
   }
 };
