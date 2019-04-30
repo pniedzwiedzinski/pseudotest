@@ -14,7 +14,6 @@ from .api.dbhandlers import get_all_file_ids, get_all_tasks
 from .models import Task, Score
 from .serializers import TaskSerializer, ScoreSerializer
 
-import requests
 import json
 from datetime import datetime, timedelta
 
