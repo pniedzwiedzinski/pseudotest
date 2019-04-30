@@ -12,7 +12,7 @@ from test_django.settings import S3_NAME
 
 from .api.dbhandlers import get_all_file_ids, get_all_tasks
 from .models import Task, Score
-from .serializers import TaskSerializer, ScoreSerializer
+from .serializers import TaskSerializer
 
 import json
 from datetime import datetime, timedelta
@@ -68,12 +68,5 @@ class TaskView(viewsets.ViewSet):
     def list(self, request):
         queryset = Task.objects.all()
         serializer = TaskSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-
-class ScoreView(viewsets.ViewSet):
-    def list(self, request):
-        queryset = Score.objects.all()
-        serializer = ScoreSerializer(queryset, many=True)
         return Response(serializer.data)
         
