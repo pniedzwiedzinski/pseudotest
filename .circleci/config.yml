@@ -157,6 +157,16 @@ jobs:
           name: Deploy
           command: aws-code-deploy
 
+  deploy_heroku:
+    docker:
+      - image: buildpack-deps:trusty
+    steps:
+      - checkout
+      - run:
+          name: Deploy Master to Heroku
+          command: |
+            git subtree push --prefix test_django https://heroku:$HEROKU_KEY@git.heroku.com/pseudotest.git master
+
 workflows:
   version: 2
 
@@ -165,6 +175,13 @@ workflows:
       - test_django
       - test_lambda
       - deploy_django:
+          requires:
+            - test_django
+            - test_lambda
+          filters:
+            branches:
+              only: master
+      - deploy_heroku:
           requires:
             - test_django
             - test_lambda
