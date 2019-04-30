@@ -41,7 +41,7 @@
           <option v-for="task in tasks" :key="task.name" :value="task.name">{{task.name}}</option>
         </select>
         <Task :task="selectedTask.description"/>
-        <Send @submit-success="addTest" @submit-fail="testFailed"/>
+        <Send :taskId="selectedTask.id" @submit-success="addTest" @submit-fail="testFailed"/>
       </div>
     </div>
   </div>
@@ -76,8 +76,8 @@ export default {
       db: null,
       taskSelection: false,
       tasks: [],
-      selectedTask: null,
-      pendingTasks: []
+      selectedTask: [],
+      pendingTasks: [],
     };
   },
   methods: {
@@ -97,7 +97,7 @@ export default {
       this.openedTest = this.tests[this.tests.length - 1];
     },
     testFailed: async function(error) {
-      console.error(error);
+      alert(error);
     },
     openTest: function(id) {
       for (const test of this.tests) {
