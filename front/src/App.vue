@@ -125,12 +125,18 @@ export default {
               db.transaction("tests", "readwrite")
                 .objectStore("tests")
                 .put(Object.assign(pendingTask, { status: "error" }));
+              pendingTasks.splice(pendingTasks.indexOf(pendingTask), 1);
+              return this.db.getAllFromIndex("tests", "time");
             } else if (Array.isArray(response.status)) {
               db.transaction("tests", "readwrite")
                 .objectStore("tests")
-                .put(Object.assign(pendingTask, { status: response.status }));
+                .put(Object.assign(pendingTask, { status:"pass",results: response.status }));
               pendingTasks.splice(pendingTasks.indexOf(pendingTask), 1);
+              return this.db.getAllFromIndex("tests", "time");
             }
+          })
+          .then(refreshedTests=>{
+            this.tests = refreshedTests;
           });
       }
       setTimeout(this.refreshPending, 5000);
