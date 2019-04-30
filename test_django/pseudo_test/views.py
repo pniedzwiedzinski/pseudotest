@@ -30,7 +30,7 @@ def send_answer(request):
         if valid_extension and file_is_less_than_1MB:
 
             # Check if task exists
-            task = Task.objects.filter(name=request.POST["task"]).first()
+            task = Task.objects.filter(id=request.POST["task"]).first()
             if task is None:
                 return JsonResponse({"result": "error", "message": "invalid task"})
 
