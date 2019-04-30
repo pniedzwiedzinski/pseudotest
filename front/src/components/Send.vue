@@ -8,7 +8,7 @@
 <script>
 import Button from "./Button.vue";
 
-const host = "http://ec2-52-29-167-193.eu-central-1.compute.amazonaws.com";
+const host = "https://pseudotest.herokuapp.com";
 
 export default {
   name: "Send",
