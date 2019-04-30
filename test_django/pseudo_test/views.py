@@ -2,7 +2,7 @@ import os
 from uuid import uuid4
 
 import boto3
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, Http404
 from django.shortcuts import render
 
 from rest_framework import viewsets
@@ -65,7 +65,11 @@ def get_file_id():
 
 
 def get_answer(request, file_id):
-    score = Score.objects.get(file_id=file_id)
+    score = Score.objects.filter(file_id=file_id).first()
+
+    if score is None:
+        raise Http404('{"result": "error", message: "id does not exist"}')
+
     if datetime.now() - score.score_date > timedelta(minutes=15):
         return JsonResponse({"status": "error"})
     elif score.score == "":
