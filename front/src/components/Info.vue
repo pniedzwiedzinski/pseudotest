@@ -18,6 +18,7 @@ export default {
 
 <style scoped>
 .more_info {
+  z-index: 99;
   display: none;
   background: #fff;
   padding: 20px;
@@ -34,7 +35,7 @@ export default {
 .info:hover + .more_info {
   display: block;
   position: absolute;
-  right: 20px;
+  margin-left: 40px;
 }
 
 .icon {
