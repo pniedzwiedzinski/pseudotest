@@ -1,4 +1,4 @@
 git+https://github.com/pniedzwiedzinski/pseudo.git
 boto3==1.9.142
-botocore==1.12.134
+botocore==1.12.142
 pymysql==0.9.3
