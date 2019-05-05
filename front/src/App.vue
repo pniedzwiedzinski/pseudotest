@@ -31,7 +31,28 @@
         :tests="tests"
         v-if="tests.length!==0"
       />
-      <p v-else class="check-your-solution margin-auto">Sprawdź swoje rozwiązanie!</p>
+      <div v-else class="margin-auto">
+        <h2 class="check-your-solution">Sprawdź swoje rozwiązanie!</h2>
+        <p>
+          Prześlij swój algorytm zapisany w
+          <a
+            href="https://github.com/pniedzwiedzinski/pseudo"
+          >pseudokodzie</a> i sprawdź jego poprawność.
+        </p>
+      </div>
+      <div class="cc">
+        Icons made by
+        <a
+          href="https://www.flaticon.com/authors/smashicons"
+          title="Smashicons"
+        >Smashicons</a> from
+        <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by
+        <a
+          href="http://creativecommons.org/licenses/by/3.0/"
+          title="Creative Commons BY 3.0"
+          target="_blank"
+        >CC 3.0 BY</a>
+      </div>
     </div>
 
     <div v-if="taskSelection">
@@ -77,7 +98,7 @@ export default {
       taskSelection: false,
       tasks: [],
       selectedTask: [],
-      pendingTasks: [],
+      pendingTasks: []
     };
   },
   methods: {
@@ -127,22 +148,32 @@ export default {
               pendingTasks.splice(pendingTasks.indexOf(pendingTask), 1);
               return this.db.getAllFromIndex("tests", "time");
             } else if (Array.isArray(response.status)) {
-              if(response.status.includes(0)){
+              if (response.status.includes(0)) {
                 db.transaction("tests", "readwrite")
-                .objectStore("tests")
-                .put(Object.assign(pendingTask, { status:"fail",results: response.status }));
-              }else{
+                  .objectStore("tests")
+                  .put(
+                    Object.assign(pendingTask, {
+                      status: "fail",
+                      results: response.status
+                    })
+                  );
+              } else {
                 db.transaction("tests", "readwrite")
-                .objectStore("tests")
-                .put(Object.assign(pendingTask, { status:"pass",results: response.status }));  
+                  .objectStore("tests")
+                  .put(
+                    Object.assign(pendingTask, {
+                      status: "pass",
+                      results: response.status
+                    })
+                  );
               }
               pendingTasks.splice(pendingTasks.indexOf(pendingTask), 1);
               return this.db.getAllFromIndex("tests", "time");
             }
           })
-          .then(refreshedTests=>{
+          .then(refreshedTests => {
             this.tests = refreshedTests;
-            this.openedTest = this.tests[this.tests.length - 1];//possible fix in the future
+            this.openedTest = this.tests[this.tests.length - 1]; //possible fix in the future
           });
       }
       setTimeout(this.refreshPending, 5000);
@@ -236,5 +267,9 @@ select {
 }
 .test-details {
   margin: 100px 0;
+}
+
+.cc {
+  margin: 60px 0px 40px;
 }
 </style>
