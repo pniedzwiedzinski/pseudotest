@@ -165,7 +165,7 @@ jobs:
       - run:
           name: Deploy Master to Heroku
           command: |
-            git push https://heroku:$HEROKU_KEY@git.heroku.com/pseudotest.git (git subtree split --prefix test_django master):master --force
+            git push https://heroku:$HEROKU_KEY@git.heroku.com/pseudotest.git $(git subtree split --prefix test_django master):master --force
 
 workflows:
   version: 2
