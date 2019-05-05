@@ -33,10 +33,12 @@ INSTALLED_APPS = [
     "pseudo_test",
     "corsheaders",
     "rest_framework",
+    "whitenoise",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     #    "django.middleware.csrf.CsrfViewMiddleware",
@@ -99,7 +101,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "Europe/Warsaw"
+TIME_ZONE = "UTC"
 
 USE_I18N = True
 
@@ -114,7 +116,7 @@ USE_TZ = True
 STATIC_ROOT = os.path.join(PROJECT_DIR, "staticfiles")
 STATIC_URL = "/static/"
 
-STATICFILES_DIRS = (os.path.join(PROJECT_DIR, "static"),)
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
 CORS_ORIGIN_ALLOW_ALL = True
 

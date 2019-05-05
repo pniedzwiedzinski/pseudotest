@@ -30,7 +30,7 @@ def send_answer(request):
         if valid_extension and file_is_less_than_1MB:
 
             # Check if task exists
-            task = Task.objects.filter(name=request.POST["task"]).first()
+            task = Task.objects.filter(id=request.POST["task"]).first()
             if task is None:
                 return JsonResponse({"result": "error", "message": "invalid task"})
 
@@ -43,7 +43,9 @@ def send_answer(request):
             )
 
             # Save to DB
-            new_score = Score(file_id=file_id, task_id=task, score="")
+            new_score = Score(
+                file_id=file_id, task_id=task, score="", score_date=datetime.now()
+            )
             new_score.save()
 
             return JsonResponse({"result": "success", "message": file_id})
@@ -70,11 +72,14 @@ def get_answer(request, file_id):
     if score is None:
         raise Http404('{"result": "error", message: "id does not exist"}')
 
-    if datetime.now() - score.score_date > timedelta(minutes=15):
+    # Remove timezone info
+    date = score.score_date.replace(tzinfo=None)
+
+    if datetime.now() - date > timedelta(minutes=1):
         return JsonResponse({"status": "error"})
     elif score.score == "":
         return JsonResponse({"status": "pending"})
-    return JsonResponse({"status": score.score})
+    return JsonResponse({"status": json.loads(score.score)})
 
 
 class TaskView(viewsets.ViewSet):
