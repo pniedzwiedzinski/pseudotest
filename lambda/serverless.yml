@@ -41,7 +41,7 @@ functions:
   pseudotester:
     handler: handler.lambda_handler
     reservedConcurrency: 50
-    timeout: 900
+    timeout: 60
     environment:
       S3_BUCKET: ${self:custom.buckets.${opt:stage}}
       DB_NAME: pseudotest

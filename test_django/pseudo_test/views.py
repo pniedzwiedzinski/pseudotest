@@ -75,7 +75,7 @@ def get_answer(request, file_id):
     # Remove timezone info
     date = score.score_date.replace(tzinfo=None)
 
-    if datetime.now() - date > timedelta(minutes=15):
+    if datetime.now() - date > timedelta(minutes=1):
         return JsonResponse({"status": "error"})
     elif score.score == "":
         return JsonResponse({"status": "pending"})
