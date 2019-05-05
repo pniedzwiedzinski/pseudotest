@@ -34,15 +34,14 @@
       <p v-else class="check-your-solution margin-auto">Sprawdź swoje rozwiązanie!</p>
     </div>
 
-
     <div v-if="taskSelection">
       <Header logo/>
       <div class="container">
         <select @change="selectTask($event)" name="task" id="task">
-          <option v-for="task in tasks" :key="task.title" :value="task.title">{{task.title}}</option>
+          <option v-for="task in tasks" :key="task.name" :value="task.name">{{task.name}}</option>
         </select>
-        <Task :task="selectedTask.body"/>
-        <Send @submit-success="addTest" @submit-fail="testFailed"/>
+        <Task :task="selectedTask.description"/>
+        <Send :taskId="selectedTask.id" @submit-success="addTest" @submit-fail="testFailed"/>
       </div>
     </div>
   </div>
@@ -71,38 +70,33 @@ export default {
   },
   data() {
     return {
+      host: "https://pseudotest.herokuapp.com",
       tests: [],
       openedTest: null,
       db: null,
       taskSelection: false,
-      tasks: [
-        {
-          title: "Zadanie 1.1",
-          body: "Tutaj mamy sobie treść zadania jako plaintext"
-        },
-        {
-          title: "Zadanie 1.2",
-          body: "Tutaj mamy sobie treść zadania jako plaintext 2"
-        }
-      ],
-      selectedTask: null
+      tasks: [],
+      selectedTask: [],
+      pendingTasks: [],
     };
   },
   methods: {
-    addTest: async function({title,id,status,results}) {
-      this.db.add("tests", {
-        title: title,
+    addTest: async function(id) {
+      const newTask = {
+        title: this.selectedTask.name,
         id: id,
-        status: status,
-        results: results
-      });
-      this.tests = await this.db.getAll("tests");
+        status: "pending",
+        results: [],
+        time: Date.now()
+      };
+      this.db.add("tests", newTask);
+      this.pendingTasks.push(newTask);
+      this.tests = await this.db.getAllFromIndex("tests", "time");
       this.taskSelection = false;
       this.selectedTask = this.tasks[0];
-      this.openedTest = this.tests[this.tests.length - 1];
     },
     testFailed: async function(error) {
-      console.log(error)
+      alert(error);
     },
     openTest: function(id) {
       for (const test of this.tests) {
@@ -112,26 +106,67 @@ export default {
       }
     },
     selectTask: function(event) {
-      const title = event.target.value;
+      const name = event.target.value;
       for (const task of this.tasks) {
-        if (task.title === title) {
+        if (task.name === name) {
           this.selectedTask = task;
         }
       }
+    },
+    refreshPending: async function() {
+      for (const pendingTask of this.pendingTasks) {
+        const db = this.db;
+        const pendingTasks = this.pendingTasks;
+        fetch(this.host + "/get/" + pendingTask.id)
+          .then(r => r.json())
+          .then(response => {
+            if (response.status === "error") {
+              db.transaction("tests", "readwrite")
+                .objectStore("tests")
+                .put(Object.assign(pendingTask, { status: "error" }));
+              pendingTasks.splice(pendingTasks.indexOf(pendingTask), 1);
+              return this.db.getAllFromIndex("tests", "time");
+            } else if (Array.isArray(response.status)) {
+              if(response.status.includes(0)){
+                db.transaction("tests", "readwrite")
+                .objectStore("tests")
+                .put(Object.assign(pendingTask, { status:"fail",results: response.status }));
+              }else{
+                db.transaction("tests", "readwrite")
+                .objectStore("tests")
+                .put(Object.assign(pendingTask, { status:"pass",results: response.status }));  
+              }
+              pendingTasks.splice(pendingTasks.indexOf(pendingTask), 1);
+              return this.db.getAllFromIndex("tests", "time");
+            }
+          })
+          .then(refreshedTests=>{
+            this.tests = refreshedTests;
+            this.openedTest = this.tests[this.tests.length - 1];//possible fix in the future
+          });
+      }
+      setTimeout(this.refreshPending, 5000);
     }
   },
   created: async function() {
+    fetch(this.host + "/tasks/")
+      .then(r => r.json())
+      .then(response => {
+        this.tasks = response;
+        this.selectedTask = this.tasks[0];
+      });
     const db = await openDB("Pseudotest", 1, {
       upgrade(db) {
-        db.createObjectStore("tests", {
-          keyPath: "id",
-          autoIncrement: true
+        const store = db.createObjectStore("tests", {
+          keyPath: "id"
         });
+        store.createIndex("time", "time");
       }
     });
     this.db = db;
-    this.tests = await db.getAll("tests");
-    this.selectedTask = this.tasks[0];
+    this.tests = await this.db.getAllFromIndex("tests", "time");
+    this.pendingTasks = this.tests.filter(test => test.status === "pending");
+    this.refreshPending();
   }
 };
 </script>
@@ -196,10 +231,10 @@ select {
   width: 800px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
 }
-.entries--short{
+.entries--short {
   width: 400px;
 }
-.test-details{
+.test-details {
   margin: 100px 0;
 }
 </style>
