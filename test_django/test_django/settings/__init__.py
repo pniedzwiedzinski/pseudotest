@@ -80,6 +80,7 @@ DATABASES = {
         "PASSWORD": os.environ["DB_PASSWORD"],
         "HOST": os.environ["DB_HOST"],
         "PORT": os.environ["DB_PORT"],
+        "OPTIONS": {"charset": "utf8mb4", "use_unicode": True},
     }
 }
 
