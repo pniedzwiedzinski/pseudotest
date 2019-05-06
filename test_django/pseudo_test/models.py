@@ -3,22 +3,22 @@ from datetime import datetime
 
 
 class Task(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=20)
-    description = models.CharField(max_length=1000)
+    description = models.TextField(max_length=1000)
 
     def __str__(self):
-        return str([self.id, self.name, self.description])
+        return self.name
 
 
 class Test(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
+    task_id = models.ForeignKey(Task, on_delete=models.CASCADE)
     test_in = models.CharField(max_length=100, default="[]")
     test_out = models.CharField(max_length=100, default="[]")
-    task_id = models.ForeignKey(Task, on_delete=models.CASCADE)
 
     def __str__(self):
-        return str([self.id, self.test_in, self.test_out, self.task_id])
+        return f"{str(self.task_id)}: {str(self.test_in)} {str(self.test_out)}"
 
 
 class Score(models.Model):
