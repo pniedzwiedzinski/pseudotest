@@ -7,7 +7,11 @@
 
       <div class="flex-column-center" v-if="openedTest===null">
         <Logo class="main-logo-margin"/>
-        <Button class="main-button-margin" @click.native="taskSelection=true" text="Prześlij"/>
+        <Button
+          class="main-button-margin"
+          @click.native="taskSelection=true"
+          text="Wybierz zadanie"
+        />
       </div>
 
       <div class="test-details" v-else>
@@ -58,9 +62,12 @@
     <div v-if="taskSelection">
       <Header logo/>
       <div class="container">
-        <select @change="selectTask($event)" name="task" id="task">
-          <option v-for="task in tasks" :key="task.name" :value="task.name">{{task.name}}</option>
-        </select>
+        <div>
+          <h3 style="display: inline-block">Wybierz zadanie:</h3>
+          <select @change="selectTask($event)" name="task" id="task" style="display: inline-block">
+            <option v-for="task in tasks" :key="task.name" :value="task.name">{{task.name}}</option>
+          </select>
+        </div>
         <Task :task="selectedTask.description"/>
         <Send :taskId="selectedTask.id" @submit-success="addTest" @submit-fail="testFailed"/>
       </div>

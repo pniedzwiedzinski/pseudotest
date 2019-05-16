@@ -13,9 +13,9 @@ export default {
 
 <style scoped>
 .button {
-  width: 153px;
+  min-width: 153px;
   height: 46px;
-  padding: 11px;
+  padding: 11px 20px 11px 20px;
   margin: 0 20px;
 
   font-family: Roboto, arial;

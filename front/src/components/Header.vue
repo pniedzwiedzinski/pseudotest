@@ -14,7 +14,7 @@
         zgłoś błąd
         <img src="@/assets/warning.svg" alt>
       </a>
-      <Button text="Prześlij" v-if="button" @click.native="buttonEvent" />
+      <Button id="send-button" text="Prześlij" v-if="button" @click.native="buttonEvent"/>
     </div>
   </header>
 </template>
@@ -32,7 +32,7 @@ export default {
   props: {
     logo: Boolean,
     button: Boolean,
-    buttonEvent: Function,
+    buttonEvent: Function
   }
 };
 </script>
