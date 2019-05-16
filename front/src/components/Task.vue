@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h3>Treść zadania:</h3>
     <p class="task">{{task}}</p>
   </div>
 </template>
